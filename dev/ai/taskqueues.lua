@@ -1,4 +1,4 @@
---[[
+	--[[
  Task Queues! 
 edit by molix 04/11/2024 ÷ 05/11/2024
 se ci sono dei lavori da concludere, questi sono segnati dal tag ####################lavoro_da_concludere###
@@ -15,7 +15,7 @@ todo
 
 local debug_commander = true		-- debug canale commandante riferito a max costruzioni realizzate (factory, metex ecc)
 local debug_riepilogo = true		-- debug riepilogo: fa un conteggio di tutte le costruzioni effettuate	
-local debug_1 = false 				-- debug canale 1 riferito alla funzione func_COMbuilLabNFA
+local debug_1 = true 				-- debug canale 1 riferito alla funzione func_COMbuilLabNFA
 local debug_2 = true 				-- debug canale 1 riferito alla funzione func_1lvlbuilLabNFA ####################lavoro_da_concludere###  da implementare
 
 math.randomseed( os.time() )
