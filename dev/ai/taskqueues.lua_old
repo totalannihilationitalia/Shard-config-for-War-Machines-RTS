@@ -1,0 +1,297 @@
+--[[
+ Task Queues! 
+edit by molix 04/11/2024 ÷ 05/11/2024
+rev1= aggiunto blocco di variabili per limitare le costruzioni del comandante
+
+todo 
+-- aggiungere la variabile di presenza di estrattori sottomarini, cosi da capire se le navi costruttori devono costruire estrattori sottomarini/
+-- aggiungere sistema check risorse per gestire le costruzioni 
+-- verificare se si può utilizzare l'AI nelle missioni, magari aggiungendo una variabile "skirmish" || "missions" per gestire diverse taskqueques
+]]--
+
+local debug_commander = true		-- debug canale commandante
+local debug_1 = true 				-- debug canale 1
+
+math.randomseed( os.time() )
+math.random(); math.random(); math.random()
+
+-- variabili di costruzione
+local max_commander_factory = 3 -- numero di fabbriche che il comandante può costruire (serve a saltare la costruzione quando ha raggiunto il n° max)
+
+local min_commander_metex = 3 				-- numero minimo di estrattori che il comandante può costruire (serve a saltare la costruzione quando ha raggiunto il n° max, altrimenti costuisce solo quelli andando fino dal nemico)
+local max_commander_metex = 4 				-- numero massimo di estrattori che il comandante può costruire (serve a saltare la costruzione quando ha raggiunto il n° max, altrimenti costuisce solo quelli andando fino dal nemico)
+local tot_builded_commander_metex = 0 		-- gestito dalla logica: conta quanti estrattori sono stati costruiti dal comandante
+
+local min_commander_powerplants = 3			-- numero minimo di powerplants (solari o eoliche) che il comandante può costruire (serve a saltare la costruzione quando ha raggiunto il n° max, altrimenti costuisce solo quelli andando fino dal nemico)
+local max_commander_powerplants = 6				-- numero massimo di powerplants (solari o eoliche) che il comandante può costruire (serve a saltare la costruzione quando ha raggiunto il n° max, altrimenti costuisce solo quelli andando fino dal nemico)
+local tot_builded_commander_powerplants = 0		-- gestito dalla logica: conta quante powerplant (solari o eoliche) sono stati costruiti dal comandante
+
+local max_1lvl_builder_metex = 2 		-- numero max di estrattori che il costruttore di primo livello può inizialmente costruire 
+
+
+-------------------------------------------------
+-------------------------------------------------
+-- NFA
+-------------------------------------------------
+-------------------------------------------------
+
+-- funzione comandante costruisci estrattori di metallo
+function func_NFA_com_metex()
+	if tot_builded_commander_metex < max_commander_metex then
+	tot_builded_commander_metex = tot_builded_commander_metex+1
+		 if debug_commander then
+		 game:SendToConsole("DEBUG_COMM: il comandante costruisce l'estrattore numero: "..tot_builded_commander_metex)
+		 end
+	return "cormex"
+	else
+		 if debug_commander then
+		 game:SendToConsole("DEBUG_COMM: il ha gia costruito un massimo di "..tot_builded_commander_metex.."estrattori, salto questa funzione")
+		 end
+	return "" -- fare in modo che il sistema non dica tutte le volte che non esiste questa unità ####################
+	end
+end
+-- funzione verifica il valore medio del vento nella mappa, in base al vento ritorna come valore il generatore eolico o solare
+function func_NFAWindSolar()
+	if map:AverageWind() > 10 then
+	-- test scrivo il valore medio del vento, stando al codice --> game:SendToConsole("Shard by AF - playing:"..game:GameName().." on:"..game.map:MapName())" la stringa corretta potrebbe essere game.map:AverageWind()
+	 if debug_1 then
+	 game:SendToConsole("DEBUG_1:fabbrica eolica") 
+	 game:SendToConsole("DEBUG_1: il valore del vento è:"..game.map:AverageWind()) 
+
+	 end
+		return "corwin"
+	else
+		return "corsolar"
+	end
+end
+
+-- funzione randomlab, restituisce il valore di una fabbrica a caso
+function randomLab()
+	local r = math.random(0,2)
+	if r == 0 then
+		return "corlab"  
+	elseif r == 1 then
+		return "corvp"  
+	else
+		return "corap"  
+
+	end
+end
+
+-- in funzione della mappa gestisco il task di costruzione dei cantieri navali, fabbriche aeree o di terra per la fazione NFA
+function func_tipomappaLabNFA() 
+		if debug_1 then
+		game:SendToConsole("DEBUG_1: il nome della mappa è:"..game.map:MapName())
+		end
+-- 1 se la mappa fa parte de gruppo "terra e aria"
+	if game.map:MapName()== "Akilon" or game.map:MapName()== "Titan" or game.map:MapName()== "TMA-0 v1_1" or game.map:MapName()== "The Rock" or game.map:MapName()== "Stronghold_beta" or game.map:MapName()== "Alone" or game.map:MapName()== "Port Island Dry Center" or game.map:MapName()== "Port Island Dry" or game.map:MapName()== "Orbital Station One" or game.map:MapName()== "Nuclear Winter" or game.map:MapName()== "Lava Island" or game.map:MapName()== "Folsom Dam" or game.map:MapName()== "Desert of Sninon" then
+	-- a questo punto creo una condizione random delle fabbriche di terra / aria
+		if debug_1 then
+		game:SendToConsole("DEBUG_1: il gruppo della mappa è terra e aria")
+		end
+	
+		local r = math.random(0,2)
+			if r == 0 then
+			return "corlab"  -- lab
+			elseif r == 1 then
+			return "corvp"   -- veicoli
+			else
+			return "corap"   -- aerei
+			end
+-- 2 se la mappa fa parte de gruppo "terra mare e aria"
+	elseif game.map:MapName()== "Eridlon Island" or game.map:MapName()== "Tropical" or game.map:MapName()== "Tabula" or game.map:MapName()== "Port Island Water" or game.map:MapName()== "Dworld_V1" or game.map:MapName()== "Battlefield" or game.map:MapName()== "Delta Siege dry" or game.map:MapName()== "Delta Siege dry duo" then
+	-- a questo punto creo una condizione random delle fabbriche di terra / aria
+			if debug_1 then
+		game:SendToConsole("DEBUG_1: il gruppo della mappa è terra mare e aria")
+		end
+		local r = math.random(0,3)
+			if r == 0 then
+			return "corlab"  -- robot
+			elseif r == 1 then
+			return "corvp"   -- veicoli
+			elseif r == 2 then
+			return "corap"   -- aerei			
+			else
+			return "corsy"   -- navi
+			end
+-- 3 se la mappa fa parte de gruppo "mare e aria"
+	elseif game.map:MapName()== "definire 1" or game.map:MapName()== "definire 2" then
+			if debug_1 then
+		    game:SendToConsole("DEBUG_1: il gruppo della mappa è mare e aria")
+		    end
+		local r = math.random(0,1)
+			if r == 0 then
+			return "corap"  -- aerei
+			else
+			return "corsy"   -- navi
+			end
+-- 4 se la mappa fa parte de gruppo "solo mare"
+	elseif game.map:MapName()== "definire 3" or game.map:MapName()== "definire 4" then
+		if debug_1 then
+		game:SendToConsole("DEBUG_1: il gruppo della mappa è solo mare")
+		end
+		return "corsy"
+-- 5 se il nome della mappa non appare nell'elenco rimaniamo sullo standard "terra e aria"	
+	else
+-- se si gioca su una mappa che non appare nel suddetto elenco, si gioca con le impostazioni di default
+-- ############### inserire le costruzioni di default
+		if debug_1 then
+		game:SendToConsole("DEBUG_1: questa mappa non rientra in alcun gruppo. aggiungerla in taskqueques.lua")
+		end
+	end
+
+end
+
+
+local task_nfa_comm = {
+	func_NFAWindSolar,
+	func_NFA_com_metex,
+	func_NFA_com_metex,
+	func_NFA_com_metex,
+	func_NFAWindSolar,
+	func_NFAWindSolar,	
+	func_tipomappaLabNFA,
+	func_NFAWindSolar,		
+--	randomLab,
+	"corllt",
+	"corrad",
+	func_NFAWindSolar,
+	func_NFAWindSolar,
+	func_NFAWindSolar,
+	func_NFAWindSolar,
+	func_NFAWindSolar,
+	"cormex",
+	"cormex",
+	"cormex",
+	"corllt",
+	func_NFAWindSolar,
+}
+local task_nfa_kbot = {
+	func_NFAWindSolar,
+	"cormex",
+	func_NFAWindSolar,
+	"cormex",
+	"cormex",
+	"corllt",
+	"corrad",
+	func_NFAWindSolar,
+	func_NFAWindSolar,
+	func_NFAWindSolar,
+	func_NFAWindSolar,
+	func_NFAWindSolar,
+	"cormex",
+	"cormex",
+	"cormex",
+	"corllt",
+	func_NFAWindSolar,
+}
+
+local task_icu_comm = {
+	"armsolar",
+	"icumetex",
+	"armsolar",
+	"icumetex",
+	"icumetex",
+	"armlab",
+	"iculighlturr",
+	"armrad",
+	"armsolar",
+	"armsolar",
+	"armsolar",
+	"armsolar",
+	"icumetex",
+	"armsolar",
+	"icumetex",
+	"icumetex",
+	"iculighlturr",
+	"armlab",
+	"armrad",
+	"armsolar",
+	"armsolar",
+	"armsolar",
+}
+
+local task_icu_kbot = {
+	"armsolar",
+	"icumetex",
+	"armsolar",
+	"icumetex",
+	"icumetex",
+	"armlab",
+	"iculighlturr",
+	"armrad",
+	"armsolar",
+	"armsolar",
+	"armsolar",
+	"armsolar",
+	"icumetex",
+	"armsolar",
+	"icumetex",
+	"icumetex",
+	"iculighlturr",
+	"armlab",
+	"armrad",
+	"armsolar",
+	"armsolar",
+	"armsolar",
+}
+
+local task_nfa_kbot_lab = {
+	"corck",
+	"corck",
+	"corck",
+	"corak",
+	"corak",
+	"corak",
+	"corak",
+	"corak",
+	"corak",
+	"corak",
+	"corak",
+	"corak",
+	"corak",
+	"corak",
+	"corak",
+	"corak",
+	"corak",
+	"corak",
+	"corak",
+}
+
+local task_icu_kbot_lab = {
+	"icuck",
+	"icuck",
+	"icuck",
+	"icupatroller",
+	"icupatroller",
+	"icupatroller",
+	"icupatroller",
+	"icupatroller",
+	"icupatroller",
+	"icupatroller",
+	"icupatroller",
+	"icupatroller",
+	"icupatroller",
+	"icupatroller",
+	"icupatroller",
+	"icupatroller",
+	"icupatroller",
+	"icupatroller",
+	"icupatroller",
+	"icupatroller",
+	"icupatroller",
+}
+taskqueues = {
+	-- unittype = tasklist,
+-- task per commander 
+	nfacom = task_nfa_comm,
+	icucom = task_icu_comm,
+
+-- we can assign 1 list, to multiple unit types, here a construction kbot (corck) gets the construction kbot tasklist, but then we assign it to the construction vehicle too (corcv))
+	corck = task_nfa_kbot,
+	corcv = task_nfa_kbot,
+	icuck = task_icu_kbot,
+-- task per fabbriche
+	corlab = task_nfa_kbot_lab,
+	armlab = task_icu_kbot_lab,
+}
