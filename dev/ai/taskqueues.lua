@@ -24,13 +24,15 @@ function randomLab()
 	end
 end
 
-function testcostr()
---	 		local lotsOfMetal = ai.Metal.income > 25 
---	 local controlMetalSpots = ai.Metal.income  --ai.mexCount
---EchoDebug("metal income: " .. ai.Metal.income )
+function debugcostr()
 
-	 game:SendToConsole("totale raggiunto".. ai.Metal.income)
-
+	 game:SendToConsole("estrazione di metallo: ".. ai.Metal.income) -- restituisce il valore di metallo estratto
+	 game:SendToConsole("metallo utilizzato: ".. ai.Metal.usage) -- restituisce il valore di metallo utilizzato
+ 	 game:SendToConsole("capacita magazzino di metallo in scala da 0 a 1 (0 - 100%): ".. ai.Metal.full) -- restituisce valori da 0 a 1 esprime la quantità di metallo da 0 al 100%
+	 game:SendToConsole("capacita magazzino metallo: ".. ai.Metal.capacity) -- restituisce il valore del magazzino totale disponibile
+	 game:SendToConsole("un altra variabile per la capacità di magazzino metallo: ".. ai.Metal.reserves) -- come precedente, verificare se include anche gli alleati
+	 -- lo stesso per energia, sostituire Metal con Energy
+	 game:SendToConsole("capacita magazzino energia: ".. ai.Energy.capacity) -- restituisce il valore del magazzino totale disponibile	 
 	 return "cormex"
 	 
 	 
@@ -38,7 +40,7 @@ function testcostr()
 
 local nfacommanderlist = {
 --	CoreWindSolar,
-	testcostr,
+	debugcostr, -- mettiamo tutte le funzioni possibili per il test
 }
 
 taskqueues = {
