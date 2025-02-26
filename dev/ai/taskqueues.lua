@@ -1,7 +1,8 @@
 --[[
  Task Queues!
 ]]--
-
+-- 26/02/2025 importato "econhandler.lua"				-- molixx
+-- 26/02/2025 settati i moduli in "modules.lua"			-- molixx
 
 math.randomseed( os.time() )
 math.random(); math.random(); math.random()
@@ -34,6 +35,10 @@ function debugcostr()
 	 -- lo stesso per energia, sostituire Metal con Energy
 	 game:SendToConsole("capacita magazzino energia: ".. ai.Energy.capacity) -- restituisce il valore del magazzino totale disponibile	 
 	 return "cormex"
+--	 game:SendToConsole("capacita magazzino energia: ".. ai.mexCount) -- NON FUNZIONA!!!!!! probabilmente bisogna aggiungere il modulo counthandler ###############################################################
+
+
+
 	 
 	 
  end
