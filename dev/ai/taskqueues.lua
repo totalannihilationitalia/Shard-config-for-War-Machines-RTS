@@ -24,7 +24,7 @@ function randomLab()
 		return "corap"
 	end
 end
-
+--[[
 function debugcostr()
 
 	 game:SendToConsole("estrazione di metallo: ".. ai.Metal.income) -- restituisce il valore di metallo estratto
@@ -36,21 +36,42 @@ function debugcostr()
 	 game:SendToConsole("capacita magazzino energia: ".. ai.Energy.capacity) -- restituisce il valore del magazzino totale disponibile	 
 	 return "cormex"
 --	 game:SendToConsole("capacita magazzino energia: ".. ai.mexCount) -- NON FUNZIONA!!!!!! probabilmente bisogna aggiungere il modulo counthandler ###############################################################
-
-
-
-	 
-	 
  end
+]]--
 
 local nfacommanderlist = {
 --	CoreWindSolar,
 	debugcostr, -- mettiamo tutte le funzioni possibili per il test
 }
 
+-- andronians hovercraft
+local task_and_hovercraft_lab = {
+   	 "andgaso",
+	 "andlipo",
+	 "andmisa",
+}
+
+-- andronians kbot lab
+local task_and_kbot_lab = {
+"andbrskr",
+"anddauber",
+}
+
+-- andronians adv. hovercraft
+local task_and_adv_hovercraft_lab = {
+   	 "androck",
+	 "andtanko",
+	 "andtesla",
+	 "andnikola",
+}
+
+
 taskqueues = {
 	-- unittype = tasklist,
 	nfacom = nfacommanderlist,
+	andhp = task_and_hovercraft_lab,
+	andlab = task_and_kbot_lab,	
+	andahp = task_and_adv_hovercraft_lab,
 	
 	-- we can assign 1 list, to multiple unit types, here a construction kbot (corck) gets the construction kbot tasklist, but then we assign it to the construction vehicle too (corcv))
 

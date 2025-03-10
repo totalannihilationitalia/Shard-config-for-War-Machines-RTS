@@ -18,9 +18,26 @@ attackerlist = {
 "corcrash",
 "corstorm",
 
--- AND side
-"anddauber",
+----------------
+-- AND side 
+----------------
+
+----------------
+-- andhp
+----------------
 "andgaso",
 "andlipo",
 "andmisa",
+----------------
+-- andahp
+----------------
+"androck",
+"andtanko",
+"andtesla",
+"andnikola",
+----------------
+-- andlab
+----------------
+"andbrskr",
+"anddauber",
 }
