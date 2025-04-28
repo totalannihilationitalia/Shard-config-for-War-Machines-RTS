@@ -57,6 +57,13 @@ local task_and_kbot_lab = {
 "anddauber",
 }
 
+-- andronians adv kbot lab
+local task_and_kbot_adv_lab = {
+"walker",
+"andogre",
+"exxec",
+}
+
 -- andronians adv. hovercraft
 local task_and_adv_hovercraft_lab = {
    	 "androck",
@@ -65,13 +72,13 @@ local task_and_adv_hovercraft_lab = {
 	 "andnikola",
 }
 
-
 taskqueues = {
 	-- unittype = tasklist,
 	nfacom = nfacommanderlist,
 	andhp = task_and_hovercraft_lab,
 	andlab = task_and_kbot_lab,	
 	andahp = task_and_adv_hovercraft_lab,
+	andalab = task_and_kbot_adv_lab,
 	
 	-- we can assign 1 list, to multiple unit types, here a construction kbot (corck) gets the construction kbot tasklist, but then we assign it to the construction vehicle too (corcv))
 

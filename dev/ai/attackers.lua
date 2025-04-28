@@ -40,4 +40,10 @@ attackerlist = {
 ----------------
 "andbrskr",
 "anddauber",
+----------------
+-- andalab
+----------------
+"walker",
+"andogre",
+"exxec",
 }
